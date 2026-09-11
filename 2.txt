@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RALLYPOINT — Where Every Fan Belongs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E1116;
+    --ink-soft:#161B22;
+    --paper:#F1F1E9;
+    --lime:#C6FF3D;
+    --teal:#123B3C;
+    --ember:#FF5E3A;
+    --line: rgba(241,241,233,0.14);
+    --maxw: 1180px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+  }
+  h1,h2,h3, .display{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    letter-spacing:0.5px;
+    line-height:0.95;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+
+  /* ---------- AGE GATE ---------- */
+  #ageGate{
+    position:fixed; inset:0; z-index:999;
+    background:
+      linear-gradient(180deg, rgba(14,17,22,0.55), rgba(14,17,22,0.92)),
+      radial-gradient(circle at 20% 20%, rgba(198,255,61,0.12), transparent 45%);
+    backdrop-filter: blur(6px);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  #ageGate.hidden{ display:none; }
+  .gate-card{
+    width:100%; max-width:460px;
+    background:var(--ink-soft);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:44px 36px 36px;
+    text-align:center;
+    box-shadow:0 30px 60px rgba(0,0,0,0.45);
+  }
+  .gate-mark{
+    width:52px; height:52px; border-radius:50%;
+    background:var(--lime);
+    margin:0 auto 22px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Anton', sans-serif;
+    color:var(--ink);
+    font-size:22px;
+  }
+  .gate-card h2{
+    font-size:clamp(26px,5vw,34px);
+    color:var(--paper);
+    margin-bottom:14px;
+  }
+  .gate-card p{
+    font-size:15px;
+    line-height:1.6;
+    color:rgba(241,241,233,0.68);
+    margin-bottom:30px;
+  }
+  .gate-btns{
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .gate-btn{
+    display:block; width:100%;
+    padding:16px 20px;
+    border-radius:10px;
+    font-size:16px; font-weight:700;
+    cursor:pointer; border:1px solid transparent;
+    transition: transform .15s ease;
+  }
+  .gate-btn:active{ transform: scale(0.98); }
+  .gate-btn.yes{
+    background:var(--lime); color:var(--ink);
+  }
+  .gate-btn.no{
+    background:transparent; color:var(--paper);
+    border-color:var(--line);
+  }
+  .gate-foot{
+    margin-top:22px; font-size:12px; color:rgba(241,241,233,0.4);
+  }
+
+  /* ---------- UNDER 18 SCREEN ---------- */
+  #blockScreen{
+    position:fixed; inset:0; z-index:998;
+    background:var(--ink);
+    display:none;
+    align-items:center; justify-content:center;
+    padding:24px; text-align:center;
+  }
+  #blockScreen.show{ display:flex; }
+  .block-inner h2{ font-size:clamp(28px,6vw,40px); margin-bottom:16px; color:var(--paper);}
+  .block-inner p{ color:rgba(241,241,233,0.65); max-width:420px; margin:0 auto 26px; line-height:1.6;}
+  .block-inner a.back{
+    display:inline-block; padding:14px 26px; border:1px solid var(--line);
+    border-radius:10px; font-weight:600; color:var(--paper);
+  }
+
+  /* ---------- MAIN SITE ---------- */
+  #site{ pointer-events:none; }
+  #site.ready{ pointer-events:auto; }
+
+  nav{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 6vw;
+    background:rgba(14,17,22,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    font-family:'Anton', sans-serif;
+    font-size:22px;
+    letter-spacing:0.5px;
+  }
+  .logo span{ color:var(--lime); }
+  .nav-links{ display:flex; gap:34px; font-size:14px; font-weight:600; }
+  .nav-links a{ opacity:0.75; transition:opacity .2s; }
+  .nav-links a:hover{ opacity:1; }
+  .nav-cta{
+    background:var(--lime); color:var(--ink);
+    padding:10px 18px; border-radius:8px; font-weight:700; font-size:14px;
+  }
+  .nav-toggle{ display:none; }
+
+  /* HERO */
+  .hero{
+    position:relative;
+    padding:110px 6vw 90px;
+    display:grid; grid-template-columns:1.15fr 0.85fr; gap:40px;
+    align-items:center;
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; top:-30%; right:-10%;
+    width:600px; height:600px;
+    background:radial-gradient(circle, rgba(198,255,61,0.16), transparent 65%);
+    z-index:0;
+  }
+  .hero-copy{ position:relative; z-index:1; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:13px; color:var(--lime); font-weight:700;
+    margin-bottom:20px;
+  }
+  .eyebrow::before{ content:""; width:8px; height:8px; border-radius:50%; background:var(--lime); }
+  .hero h1{
+    font-size:clamp(42px, 6.4vw, 78px);
+    color:var(--paper);
+    margin-bottom:22px;
+  }
+  .hero h1 em{ font-style:normal; color:var(--lime); }
+  .hero p.lead{
+    font-size:17px; line-height:1.7;
+    color:rgba(241,241,233,0.7);
+    max-width:480px; margin-bottom:34px;
+  }
+  .hero-actions{ display:flex; gap:16px; flex-wrap:wrap; }
+  .btn-primary{
+    background:var(--lime); color:var(--ink);
+    padding:15px 28px; border-radius:9px; font-weight:700; font-size:15px;
+  }
+  .btn-ghost{
+    padding:15px 28px; border-radius:9px; font-weight:700; font-size:15px;
+    border:1px solid var(--line); color:var(--paper);
+  }
+  .hero-visual{
+    position:relative; z-index:1;
+    aspect-ratio: 4/5;
+    border-radius:20px;
+    background:
+      linear-gradient(160deg, var(--teal), #0b2324 70%);
+    border:1px solid var(--line);
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:26px;
+    overflow:hidden;
+  }
+  .hero-visual .score{
+    font-family:'Anton', sans-serif;
+    font-size:64px; color:var(--lime);
+    line-height:1;
+  }
+  .hero-visual .score-sub{
+    font-size:13px; color:rgba(241,241,233,0.6); margin-top:10px;
+  }
+  .hero-visual .tag{
+    position:absolute; top:22px; left:22px;
+    font-size:12px; font-weight:700;
+    background:rgba(241,241,233,0.08);
+    padding:6px 12px; border-radius:20px;
+    border:1px solid var(--line);
+  }
+
+  /* STATS STRIP */
+  .stats{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    border-bottom:1px solid var(--line);
+  }
+  .stat{
+    padding:34px 6vw; text-align:center;
+    border-right:1px solid var(--line);
+  }
+  .stat:last-child{ border-right:none; }
+  .stat .num{
+    font-family:'Anton', sans-serif; font-size:36px; color:var(--lime);
+  }
+  .stat .lbl{ font-size:12.5px; color:rgba(241,241,233,0.55); margin-top:6px; }
+
+  /* SPORTS GRID */
+  .section{ padding:100px 6vw; }
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-bottom:48px; gap:20px; flex-wrap:wrap;
+  }
+  .section-head h2{ font-size:clamp(30px,4vw,44px); color:var(--paper); }
+  .section-head p{ max-width:340px; color:rgba(241,241,233,0.6); font-size:14.5px; line-height:1.6; }
+
+  .grid-sports{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:2px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:16px; overflow:hidden;
+  }
+  .sport-card{
+    background:var(--ink-soft);
+    padding:34px 26px;
+    min-height:190px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    transition: background .2s ease;
+  }
+  .sport-card:hover{ background:#1B222B; }
+  .sport-card .icon{ font-size:30px; }
+  .sport-card h3{ font-size:20px; color:var(--paper); margin-top:22px; font-family:'Inter'; font-weight:700; }
+  .sport-card p{ font-size:13px; color:rgba(241,241,233,0.5); margin-top:6px; }
+
+  /* LIVE TICKER */
+  .ticker-wrap{
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    padding:20px 0; overflow:hidden; background:var(--teal);
+  }
+  .ticker{
+    display:flex; gap:60px; white-space:nowrap;
+    animation: scroll 26s linear infinite;
+    font-family:'Anton', sans-serif; font-size:18px; color:var(--paper);
+  }
+  .ticker span{ opacity:0.85; }
+  .ticker span b{ color:var(--lime); }
+  @keyframes scroll{
+    0%{ transform:translateX(0); }
+    100%{ transform:translateX(-50%); }
+  }
+
+  /* FEATURE SPLIT */
+  .split{
+    display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center;
+  }
+  .split .feat-visual{
+    aspect-ratio:1/1;
+    background:linear-gradient(150deg, #1B222B, var(--ink-soft));
+    border:1px solid var(--line); border-radius:18px;
+    padding:30px; display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .feat-visual .row{ display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line); font-size:14px; }
+  .feat-visual .row:last-child{ border-bottom:none; }
+  .feat-visual .row b{ color:var(--lime); }
+  .split ul{ list-style:none; margin-top:24px; }
+  .split ul li{
+    padding:16px 0; border-bottom:1px solid var(--line);
+    display:flex; gap:14px; font-size:15px; color:rgba(241,241,233,0.78);
+  }
+  .split ul li b{ color:var(--paper); min-width:26px; font-family:'Anton'; color:var(--lime); }
+
+  /* CTA BAND */
+  .cta-band{
+    padding:90px 6vw; text-align:center;
+    background: radial-gradient(circle at 50% 0%, rgba(198,255,61,0.1), transparent 60%);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .cta-band h2{ font-size:clamp(30px,5vw,52px); margin-bottom:20px; }
+  .cta-band p{ color:rgba(241,241,233,0.6); margin-bottom:34px; }
+
+  footer{
+    padding:50px 6vw 34px;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px;
+    font-size:13px; color:rgba(241,241,233,0.45);
+  }
+  footer .fcol h4{ font-family:'Inter'; font-size:13px; color:var(--paper); margin-bottom:12px; }
+  footer .fcol a{ display:block; opacity:0.6; margin-bottom:8px; }
+
+  @media (max-width: 860px){
+    .hero{ grid-template-columns:1fr; padding-top:130px; }
+    .nav-links{ display:none; }
+    .stats{ grid-template-columns:repeat(2,1fr); }
+    .stat:nth-child(2){ border-right:none; }
+    .grid-sports{ grid-template-columns:1fr; }
+    .split{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- AGE GATE -->
+  <div id="ageGate">
+    <div class="gate-card">
+      <div class="gate-mark">RP</div>
+      <h2>Are you 18 years or older?</h2>
+      <p>Please confirm your age to continue to RALLYPOINT.</p>
+      <div class="gate-btns">
+        <button class="gate-btn yes" onclick="verifyAge(true)">Yes, I'm 18 or older</button>
+        <button class="gate-btn no" onclick="verifyAge(false)">No, I'm under 18</button>
+      </div>
+      <div class="gate-foot">By confirming your age, you agree to our terms.</div>
+    </div>
+  </div>
+
+  <!-- BLOCK SCREEN FOR UNDER 18 -->
+  <div id="blockScreen">
+    <div class="block-inner">
+      <h2>This page isn't available right now</h2>
+      <p>RALLYPOINT is only for users aged 18 and above. Check back once you're eligible — we'll be here.</p>
+      <a class="back" href="https://www.google.com">Go back</a>
+    </div>
+  </div>
+
+  <!-- MAIN SITE -->
+  <div id="site">
+    <nav>
+      <div class="logo">RALLY<span>POINT</span></div>
+      <div class="nav-links">
+        <a href="#sports">Sports</a>
+        <a href="#live">Live Scores</a>
+        <a href="#features">Why RallyPoint</a>
+        <a href="#join">Join Now</a>
+      </div>
+      <a class="nav-cta" href="#join">Get Started</a>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Every Match, Every Moment</div>
+        <h1>The <em>new home</em> for every sports fan</h1>
+        <p class="lead">Live scores, deep stats, and news across every sport — from cricket to football, kabaddi to badminton. Being a RALLYPOINT fan means never missing a moment.</p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="#join">Join for Free</a>
+          <a class="btn-ghost" href="#sports">Browse Sports</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="tag">LIVE · IND vs AUS</div>
+        <div class="score">287/4</div>
+        <div class="score-sub">42.3 overs · Run rate 6.75</div>
+      </div>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><div class="num">12+</div><div class="lbl">Sports Covered</div></div>
+      <div class="stat"><div class="num">4.2M</div><div class="lbl">Monthly Fans</div></div>
+      <div class="stat"><div class="num">1500+</div><div class="lbl">Live Matches / Year</div></div>
+      <div class="stat"><div class="num">24/7</div><div class="lbl">Live Updates</div></div>
+    </div>
+
+    <section class="section" id="sports">
+      <div class="section-head">
+        <h2>Pick your sport</h2>
+        <p>Live scores, schedules, and deep analysis for every category — all in one place.</p>
+      </div>
+      <div class="grid-sports">
+        <div class="sport-card"><div class="icon">🏏</div><h3>Cricket</h3><p>Live scorecards and ball-by-ball updates</p></div>
+        <div class="sport-card"><div class="icon">⚽</div><h3>Football</h3><p>Leagues, transfers, and match highlights</p></div>
+        <div class="sport-card"><div class="icon">🏸</div><h3>Badminton</h3><p>Tournament brackets and player rankings</p></div>
+        <div class="sport-card"><div class="icon">🤼</div><h3>Kabaddi</h3><p>Pro League updates and team stats</p></div>
+        <div class="sport-card"><div class="icon">🏀</div><h3>Basketball</h3><p>NBA and domestic league coverage</p></div>
+        <div class="sport-card"><div class="icon">🎾</div><h3>Tennis</h3><p>Grand Slam draws and live sets</p></div>
+      </div>
+    </section>
+
+    <div class="ticker-wrap" id="live">
+      <div class="ticker">
+        <span>IND <b>287/4</b> vs AUS</span>
+        <span>MUN <b>2-1</b> LIV — 78'</span>
+        <span>PBKS <b>190/6</b> vs CSK</span>
+        <span>Djokovic leads <b>2-1</b> sets</span>
+        <span>Patna Pirates <b>34-28</b></span>
+        <span>IND <b>287/4</b> vs AUS</span>
+        <span>MUN <b>2-1</b> LIV — 78'</span>
+        <span>PBKS <b>190/6</b> vs CSK</span>
+        <span>Djokovic leads <b>2-1</b> sets</span>
+        <span>Patna Pirates <b>34-28</b></span>
+      </div>
+    </div>
+
+    <section class="section" id="features">
+      <div class="split">
+        <div>
+          <div class="eyebrow">Why RallyPoint</div>
+          <h2 style="font-size:clamp(28px,4vw,42px);">Built for every kind of fan</h2>
+          <ul>
+            <li><b>01</b> Ball-by-ball and minute-by-minute live updates</li>
+            <li><b>02</b> Deep player and team stats in a clean dashboard</li>
+            <li><b>03</b> Personalised alerts for your favourite team</li>
+            <li><b>04</b> A clean, distraction-free reading experience</li>
+          </ul>
+        </div>
+        <div class="feat-visual">
+          <div class="row"><span>Top Scorer</span><b>V. Kohli — 94*</b></div>
+          <div class="row"><span>Best Bowler</span><b>P. Cummins — 3/42</b></div>
+          <div class="row"><span>Partnership</span><b>112 runs (89 balls)</b></div>
+          <div class="row"><span>Next Match</span><b>Sat, 7:00 PM</b></div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-band" id="join">
+      <h2>Never miss a match again</h2>
+      <p>Sign up in 2 seconds and stay connected with your favourite team.</p>
+      <a class="btn-primary" href="#">Create Free Account</a>
+    </section>
+
+    <footer>
+      <div class="fcol">
+        <div class="logo" style="font-size:18px;">RALLY<span>POINT</span></div>
+      </div>
+      <div class="fcol">
+        <h4>Sports</h4>
+        <a href="#">Cricket</a>
+        <a href="#">Football</a>
+        <a href="#">Kabaddi</a>
+      </div>
+      <div class="fcol">
+        <h4>Company</h4>
+        <a href="#">About Us</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="fcol">
+        <h4>Legal</h4>
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+      </div>
+    </footer>
+  </div>
+
+<script>
+  function verifyAge(isAdult){
+    const gate = document.getElementById('ageGate');
+    const block = document.getElementById('blockScreen');
+    const site = document.getElementById('site');
+    if(isAdult){
+      gate.classList.add('hidden');
+      site.classList.add('ready');
+      window.scrollTo({top:0, behavior:'smooth'});
+    } else {
+      gate.classList.add('hidden');
+      block.classList.add('show');
+    }
+  }
+</script>
+
+</body>
+</html>
