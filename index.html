@@ -34,7 +34,6 @@
   a{color:inherit; text-decoration:none;}
   img{max-width:100%; display:block;}
 
-  /* ---------- AGE GATE ---------- */
   #ageGate{
     position:fixed; inset:0; z-index:999;
     background: rgba(60,63,68,0.72);
@@ -99,7 +98,6 @@
   .gate-btn.no:hover{ background:#F5F5F5; }
   .gate-foot{ display:none; }
 
-  /* ---------- UNDER 18 SCREEN ---------- */
   #blockScreen{
     position:fixed; inset:0; z-index:998;
     background:var(--ink);
@@ -115,7 +113,6 @@
     border-radius:10px; font-weight:600; color:var(--paper);
   }
 
-  /* ---------- MAIN SITE ---------- */
   #site{ pointer-events:none; }
   #site.ready{ pointer-events:auto; }
 
@@ -142,7 +139,6 @@
   }
   .nav-toggle{ display:none; }
 
-  /* HERO */
   .hero{
     position:relative;
     padding:110px 6vw 90px;
@@ -212,7 +208,6 @@
     border:1px solid var(--line);
   }
 
-  /* STATS STRIP */
   .stats{
     display:grid; grid-template-columns:repeat(4,1fr);
     border-bottom:1px solid var(--line);
@@ -227,7 +222,6 @@
   }
   .stat .lbl{ font-size:12.5px; color:rgba(241,241,233,0.55); margin-top:6px; }
 
-  /* SPORTS GRID */
   .section{ padding:100px 6vw; }
   .section-head{
     display:flex; justify-content:space-between; align-items:flex-end;
@@ -254,7 +248,6 @@
   .sport-card h3{ font-size:20px; color:var(--paper); margin-top:22px; font-family:'Inter'; font-weight:700; }
   .sport-card p{ font-size:13px; color:rgba(241,241,233,0.5); margin-top:6px; }
 
-  /* LIVE TICKER */
   .ticker-wrap{
     border-top:1px solid var(--line); border-bottom:1px solid var(--line);
     padding:20px 0; overflow:hidden; background:var(--teal);
@@ -271,7 +264,6 @@
     100%{ transform:translateX(-50%); }
   }
 
-  /* FEATURE SPLIT */
   .split{
     display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center;
   }
@@ -291,7 +283,6 @@
   }
   .split ul li b{ color:var(--paper); min-width:26px; font-family:'Anton'; color:var(--lime); }
 
-  /* CTA BAND */
   .cta-band{
     padding:90px 6vw; text-align:center;
     background: radial-gradient(circle at 50% 0%, rgba(198,255,61,0.1), transparent 60%);
@@ -320,7 +311,6 @@
 </head>
 <body>
 
-  <!-- AGE GATE -->
   <div id="ageGate">
     <div class="gate-card">
       <button class="gate-close" aria-label="Close">✕</button>
@@ -333,7 +323,6 @@
     </div>
   </div>
 
-  <!-- BLOCK SCREEN FOR UNDER 18 -->
   <div id="blockScreen">
     <div class="block-inner">
       <h2>This page isn't available right now</h2>
@@ -342,7 +331,6 @@
     </div>
   </div>
 
-  <!-- MAIN SITE -->
   <div id="site">
     <nav>
       <div class="logo">RALLY<span>POINT</span></div>
@@ -361,7 +349,8 @@
         <h1>The <em>new home</em> for every sports fan</h1>
         <p class="lead">Live scores, deep stats, and news across every sport — from cricket to football, kabaddi to badminton. Being a RALLYPOINT fan means never missing a moment.</p>
         <div class="hero-actions">
-          <a class="btn-primary" href="#join">Join for Free</a>
+          <!-- AFFILIATE LINK 1: replace the href below with your real affiliate URL -->
+          <a class="btn-primary" href="PASTE_AFFILIATE_LINK_1_HERE" target="_blank" rel="noopener sponsored">Join for Free</a>
           <a class="btn-ghost" href="#sports">Browse Sports</a>
         </div>
       </div>
@@ -434,7 +423,8 @@
     <section class="cta-band" id="join">
       <h2>Never miss a match again</h2>
       <p>Sign up in 2 seconds and stay connected with your favourite team.</p>
-      <a class="btn-primary" href="#">Create Free Account</a>
+      <!-- AFFILIATE LINK 2: replace the href below with your real affiliate URL -->
+      <a class="btn-primary" href="PASTE_AFFILIATE_LINK_2_HERE" target="_blank" rel="noopener sponsored">Create Free Account</a>
     </section>
 
     <footer>
