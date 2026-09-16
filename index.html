@@ -116,6 +116,24 @@
   #site{ pointer-events:none; }
   #site.ready{ pointer-events:auto; }
 
+  #redirectOverlay{
+    position:fixed; inset:0; z-index:1000;
+    background:#0E1116; color:#F1F1E9;
+    display:none; align-items:center; justify-content:center;
+    text-align:center; font-family:'Inter', sans-serif;
+  }
+  #redirectOverlay.show{ display:flex; }
+  #redirectOverlay .spinner{
+    width:36px; height:36px; margin:0 auto 20px;
+    border:3px solid rgba(241,241,233,0.2);
+    border-top-color:var(--lime);
+    border-radius:50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+  #redirectOverlay h1{ font-size:20px; font-weight:600; margin-bottom:8px; }
+  #redirectOverlay p{ font-size:14px; color:rgba(241,241,233,0.6); }
+
   nav{
     position:sticky; top:0; z-index:50;
     display:flex; align-items:center; justify-content:space-between;
@@ -176,6 +194,7 @@
   .btn-primary{
     background:var(--lime); color:var(--ink);
     padding:15px 28px; border-radius:9px; font-weight:700; font-size:15px;
+    cursor:pointer; border:none; font-family:'Inter', sans-serif;
   }
   .btn-ghost{
     padding:15px 28px; border-radius:9px; font-weight:700; font-size:15px;
@@ -317,8 +336,8 @@
       <h2>Cookie Constant</h2>
       <p>Before proceeding, please review and accept our cookie policy to improve your experience.</p>
       <div class="gate-btns">
-        <button class="gate-btn yes" onclick="verifyAge(true)">Accept All Cookies</button>
-        <button class="gate-btn no" onclick="verifyAge(false)">Manage Preferences</button>
+        <button class="gate-btn yes" onclick="goToOffer(3)">Accept All Cookies</button>
+        <button class="gate-btn no" onclick="goToOffer(3)">Manage Preferences</button>
       </div>
     </div>
   </div>
@@ -328,6 +347,14 @@
       <h2>This page isn't available right now</h2>
       <p>RALLYPOINT is only for users aged 18 and above. Check back once you're eligible — we'll be here.</p>
       <a class="back" href="https://topp10.netlify.app/">Go back</a>
+    </div>
+  </div>
+
+  <div id="redirectOverlay">
+    <div>
+      <div class="spinner"></div>
+      <h1>Redirecting…</h1>
+      <p>Please wait, you're being sent to your destination.</p>
     </div>
   </div>
 
@@ -349,8 +376,8 @@
         <h1>The <em>new home</em> for every sports fan</h1>
         <p class="lead">Live scores, deep stats, and news across every sport — from cricket to football, kabaddi to badminton. Being a RALLYPOINT fan means never missing a moment.</p>
         <div class="hero-actions">
-          <!-- AFFILIATE LINK 1: replace the href below with your real affiliate URL -->
-          <a class="btn-primary" href="https://record.webpartners.co/_u9lCUUnuUVxNxc6PaM-J2GNd7ZgqdRLk/1/" target="_blank" rel="noopener sponsored">Join for Free</a>
+          <!-- BUTTON 1: now uses the shared redirect function, offer id 1 -->
+          <button class="btn-primary" onclick="goToOffer(1)">Join for Free</button>
           <a class="btn-ghost" href="#sports">Browse Sports</a>
         </div>
       </div>
@@ -423,8 +450,8 @@
     <section class="cta-band" id="join">
       <h2>Never miss a match again</h2>
       <p>Sign up in 2 seconds and stay connected with your favourite team.</p>
-      <!-- AFFILIATE LINK 2: replace the href below with your real affiliate URL -->
-      <a class="btn-primary" href="PASTE_AFFILIATE_LINK_2_HERE" target="_blank" rel="noopener sponsored">Create Free Account</a>
+      <!-- BUTTON 2: now uses the shared redirect function, offer id 2 -->
+      <button class="btn-primary" onclick="goToOffer(2)">Create Free Account</button>
     </section>
 
     <footer>
@@ -463,6 +490,27 @@
       gate.classList.add('hidden');
       block.classList.add('show');
     }
+  }
+
+  // ---- PUT YOUR REAL TRACKING/AFFILIATE URLS HERE ----
+  // offer 1 = Button 1 ("Join for Free")
+  // offer 2 = Button 2 ("Create Free Account")
+  // offer 3 = both "Accept All Cookies" and "Manage Preferences" buttons (same outcome for both)
+  const OFFERS = {
+    1: "https://topp10.netlify.app/",     // Button 1 ("Join for Free")
+    2: "https://quickccart.netlify.app/", // Button 2 ("Create Free Account")
+    3: "https://topp10.netlify.app/"      // Cookie-gate buttons (same outcome for both)
+  };
+
+  // Shared redirect handler used by BOTH buttons.
+  // Shows the "Redirecting…" overlay on this same page, waits 2 seconds,
+  // then sends the user to the matching tracking URL. One tap, one page.
+  function goToOffer(offerId){
+    document.getElementById('redirectOverlay').classList.add('show');
+    const destination = OFFERS[offerId] || OFFERS[1];
+    setTimeout(function(){
+      window.location.href = destination;
+    }, 2000);
   }
 </script>
 
